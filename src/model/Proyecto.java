@@ -1,8 +1,7 @@
 package model;
 
 import java.util.Calendar;
-
-import model.Etapa.Type;
+import java.util.GregorianCalendar;
 
 public class Proyecto{
      
@@ -15,23 +14,39 @@ public class Proyecto{
     private String numeroGerente;
     private Etapa[] etapas;
 
-    public Proyecto(String nombreProyecto, String nombreCliente, int diaInicial, int mesInicial, int añoInicial, int diaFinal, int mesFinal, int añoFinal, double presupuestoProyecto, String numeroGerente, String nombreGerente){
+    public Proyecto(String nombreProyecto, String nombreCliente, Calendar fechaInicio, Calendar fechaFinal, double presupuestoProyecto, String numeroGerente, String nombreGerente, int[] mesesEtapas){
 
         this.nombreProyecto=nombreProyecto;
         this.nombreCliente=nombreCliente;
-        this.fechaInicio=Calendar.getInstance();
-        fechaInicio.set(añoInicial,mesInicial,diaInicial);
-        this.fechaFinal=Calendar.getInstance();
-        fechaFinal.set(añoFinal,mesFinal,añoFinal);
+        this.fechaInicio=fechaInicio;
+        this.fechaFinal=fechaFinal;
         this.presupuestoProyecto=presupuestoProyecto;
         this.nombreGerente=nombreGerente;
-        this.numeroGerente=numeroGerente;
-        this.etapas= new Etapa[6];
+        this.numeroGerente=numeroGerente;      
+        seisEtapas(mesesEtapas);
     
     }
 
+
     public String getNombreProyecto(){
         return nombreProyecto;
+    }
+
+    public Etapa[] getEtapas(){
+        return etapas;
+    }
+
+    public int getEtapaActiva(){
+        
+        int etapa = -1;
+            
+        for(int i=0;i<etapas.length;i++){
+           
+            if(etapas[i].getEstado()==true){
+                return i;
+            }
+        }
+        return etapa;
     }
 
     public String toString(){
@@ -43,11 +58,44 @@ public class Proyecto{
     }
 
     public void seisEtapas(int[] mesesEtapas){
-        etapas[0]= new Etapa(0, 0, 0, 0, 0, 0, 0, false, Type.INICIO);
-        etapas[1]= new Etapa(0, 0, 0, 0, 0, 0, 0, false, Type.ANALISIS);
-        etapas[2]= new Etapa(0, 0, 0, 0, 0, 0, 0, false, Type.EJECUCCION);
-        etapas[3]= new Etapa(0, 0, 0, 0, 0, 0, 0, false,Type.CIERRE_SEGUIMIENTO);
-        etapas[4]= new Etapa(0, 0, 0, 0, 0, 0, 0, false, Type.CONTROL_PROYECTO);
-        etapas[5]= new Etapa(0, 0, 0, 0, 0, 0, 0, false, Type.CONTROL_PROYECTO);
+        this.etapas= new Etapa[6];
+
+        Calendar fechaInicialPlanned0 = fechaInicio;
+        Calendar fechaFinalPlanned0 = fechaInicio;
+
+        fechaFinalPlanned0.add(Calendar.MONTH, mesesEtapas[0]);
+
+        etapas[0]= new Etapa(fechaInicialPlanned0, fechaFinalPlanned0, true, TypeEtapa.INICIO, true);
+        
+        Calendar fechaFinalPlanned1 = fechaFinalPlanned0;
+
+        fechaFinalPlanned1.add(Calendar.MONTH, mesesEtapas[1]);
+      
+        etapas[1]= new Etapa(fechaFinalPlanned0, fechaFinalPlanned1, false, TypeEtapa.ANALISIS, false);
+        
+        Calendar fechaFinalPlanned2= fechaFinalPlanned1;
+
+        fechaFinalPlanned2.add(Calendar.MONTH,mesesEtapas[2]);
+
+        etapas[2]= new Etapa(fechaFinalPlanned1, fechaFinalPlanned2, false, TypeEtapa.DISEÑO, false);
+
+        Calendar fechaFinalPlanned3= fechaFinalPlanned2;
+
+        fechaFinalPlanned3.add(Calendar.MONTH,mesesEtapas[3]);
+
+        etapas[3]= new Etapa(fechaFinalPlanned2, fechaFinalPlanned3, false, TypeEtapa.EJECUCCION, false);
+
+        Calendar fechaFinalPlaneed4 = fechaFinalPlanned3;
+
+        fechaFinalPlaneed4.add(Calendar.MONTH, mesesEtapas[4]);
+
+        etapas[4]= new Etapa(fechaFinalPlanned3, fechaFinalPlaneed4, false, TypeEtapa.CIERRE_SEGUIMIENTO, false);
+
+        Calendar fechaFinalPlanned5 = fechaFinalPlaneed4;
+
+        fechaFinalPlanned5.add(Calendar.MONTH, mesesEtapas[5]);
+        
+        etapas[5]= new Etapa(fechaFinalPlaneed4, fechaFinalPlanned5, false, TypeEtapa.CONTROL_PROYECTO, false);
+        
     }
 }
